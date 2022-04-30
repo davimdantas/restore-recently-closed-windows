@@ -1,0 +1,14 @@
+{
+	"name": "Restore closed windows",
+	"description": "Give the user the option to easily restore windows from previously sessions",
+	"version": "1.0",
+	"manifest_version": 3,
+	"background": {
+		"service_worker": "background.js"
+	},
+	"action": {
+		"default_popup": "popup.html"
+	},
+	"permissions": ["activeTab", "scripting", "tabs", "storage", "sessions"],
+	"host_permissions": ["*://*/*"]
+}
