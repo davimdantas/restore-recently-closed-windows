@@ -3,6 +3,12 @@ function populateCardWithTabs(list, window = { tabs: [] }) {
 		const listItem = document.createElement('li')
 		listItem.classList.add('tab')
 
+		const span = document.createElement('span')
+		const img = new Image(8, 8)
+		img.src = tab.favIconUrl
+		span.appendChild(img)
+		listItem.appendChild(span)
+
 		const title = document.createTextNode(tab.title)
 		listItem.appendChild(title)
 		list.appendChild(listItem)
@@ -73,13 +79,7 @@ function handleRecentlyClosed(params, a = ' ') {
 document.addEventListener(
 	'DOMContentLoaded',
 	function () {
-		document
-			.querySelector('button')
-			.addEventListener('click', onclick, false)
-
-		function onclick() {
-			chrome.sessions.getRecentlyClosed(undefined, handleRecentlyClosed)
-		}
+		chrome.sessions.getRecentlyClosed(undefined, handleRecentlyClosed)
 	},
 	false
 )
