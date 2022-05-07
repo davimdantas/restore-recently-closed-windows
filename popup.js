@@ -1,3 +1,18 @@
+// web component
+class HelloWorld extends HTMLElement {
+	constructor() {
+		super()
+		this.name = 'World'
+	}
+	// connect component
+	connectedCallback() {
+		this.textContent = 'Hello World!'
+	}
+}
+
+// register component
+customElements.define('hello-world', HelloWorld)
+
 function populateCardWithTabs(list, window = { tabs: [] }) {
 	window.tabs.forEach((tab) => {
 		const listItem = document.createElement('li')
@@ -32,15 +47,15 @@ function createCard(parentElement, window) {
 	)
 	card.appendChild(button)
 
-	const container = document.createElement('div')
-	container.classList.add('container')
+	const cardBody = document.createElement('div')
+	cardBody.classList.add('card-body')
 
 	const list = document.createElement('ul')
 	list.classList.add('tabs')
 	populateCardWithTabs(list, window)
 
-	container.appendChild(list)
-	card.appendChild(container)
+	cardBody.appendChild(list)
+	card.appendChild(cardBody)
 
 	card.setAttribute('data-session-id', window.sessionId)
 
