@@ -1,18 +1,3 @@
-// web component
-class HelloWorld extends HTMLElement {
-	constructor() {
-		super()
-		this.name = 'World'
-	}
-	// connect component
-	connectedCallback() {
-		this.textContent = 'Hello World!'
-	}
-}
-
-// register component
-customElements.define('hello-world', HelloWorld)
-
 function populateCardWithTabs(list, window = { tabs: [] }) {
 	window.tabs.forEach((tab) => {
 		const listItem = document.createElement('li')
@@ -20,7 +5,12 @@ function populateCardWithTabs(list, window = { tabs: [] }) {
 
 		const span = document.createElement('span')
 		const img = new Image(8, 8)
-		img.src = tab.favIconUrl
+		img.src =
+			tab.favIconUrl ||
+			`http://www.google.com/s2/favicons?domain=${
+				new URL(tab.url).origin
+			}` ||
+			`${new URL(tab.url).origin}/favicon.ico`
 		span.appendChild(img)
 		listItem.appendChild(span)
 
@@ -30,22 +20,22 @@ function populateCardWithTabs(list, window = { tabs: [] }) {
 	})
 }
 
-function restoreWindow(sessionId) {
-	chrome.sessions.restore(sessionId)
+function restoreWindows() {
+	document.querySelectorAll('card-checkmark').forEach((card) => {
+		const sessionId = card.getAttribute('data-session-id')
+		if (card.shadowRoot.querySelector('input').checked) {
+			chrome.sessions.restore(sessionId)
+		}
+	})
 }
 
 function createCard(parentElement, window) {
 	const card = document.createElement('div')
 	card.classList.add('card')
 
-	const button = document.createElement('button')
-	button.innerHTML = 'Restore window'
-	button.addEventListener(
-		'click',
-		() => restoreWindow(window.sessionId),
-		false
-	)
-	card.appendChild(button)
+	const checkmark = document.createElement('card-checkmark')
+	checkmark.setAttribute('data-session-id', window.sessionId)
+	card.appendChild(checkmark)
 
 	const cardBody = document.createElement('div')
 	cardBody.classList.add('card-body')
@@ -82,12 +72,11 @@ function filterWindows(recentlyClosedWindows = []) {
 	return windows
 }
 
-function shapeWindows(windows) {}
-
 function handleRecentlyClosed(params, a = ' ') {
 	const filteredWindows = filterWindows(params)
 
 	const section = document.querySelector('#windows-container')
+
 	filteredWindows.forEach((window) => createCard(section, window))
 }
 
@@ -98,3 +87,6 @@ document.addEventListener(
 	},
 	false
 )
+
+const button = document.querySelector('#open-windows')
+button.addEventListener('click', () => restoreWindows(), false)
