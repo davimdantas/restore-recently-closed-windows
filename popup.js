@@ -77,7 +77,17 @@ function handleRecentlyClosed(params, a = ' ') {
 
 	const section = document.querySelector('#windows-container')
 
-	filteredWindows.forEach((window) => createCard(section, window))
+	const cards = document.createElement('cards-container')
+	cards.setAttribute(
+		'data-sessions-ids',
+		JSON.stringify(filteredWindows.map((window) => window.sessionId))
+	)
+
+	// filteredWindows.forEach((window) => {
+	// 	createCard(section, window)
+	// })
+
+	document.querySelector('body').appendChild(cards)
 }
 
 document.addEventListener(
